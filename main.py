@@ -1,22 +1,37 @@
 import streamlit as st
 import asyncio
 from Tutor_agent.agent import Tutor_agent
+from dotenv import load_dotenv
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from utils import call_agent_async
 
+load_dotenv()
 
+# Initialize session state for Streamlit
+if "initialized" not in st.session_state:
+    st.session_state.initialized = False
+    st.session_state.messages = []
+    st.session_state.runner = None
+    st.session_state.session_id = None
+    st.session_state.user_id = "aiwithbrandon"
+    st.session_state.app_name = "Tutor"
 
 # Initialize session service
 session_service = InMemorySessionService()
 
 # Async helper to run setup once
-async def initialize_session(app_name,user_id):
+async def initialize_session():
+    if not st.session_state.initialized:
+        initial_state = {
+            "user_name": "Brandon Hancock",
+        }
 
         # Create session
         new_session = await session_service.create_session(
-            app_name=app_name,
-            user_id=user_id,
+            app_name=st.session_state.app_name,
+            user_id=st.session_state.user_id,
+            state=initial_state,
         )
         st.session_state.session_id = new_session.id
 
@@ -32,9 +47,7 @@ async def initialize_session(app_name,user_id):
 
 # Main Streamlit UI
 async def main():
-    app_name="Tutor Agent"
-    user_id="007"
-    await initialize_session(app_name,user_id)
+    await initialize_session()
 
     st.title("🎓 Tutor AI Assistant")
     for msg in st.session_state.messages:
