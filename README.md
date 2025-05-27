@@ -20,6 +20,7 @@ A conversational AI tutor built with Google's Agent Development Kit (ADK) that s
 
 ```
 ADK_Project/
+├── requirments.txt       # requirments
 ├── .env                  # Environment variables
 ├── main.py               # Main application entry point
 ├── utils.py              # Utility functions for agent interaction
